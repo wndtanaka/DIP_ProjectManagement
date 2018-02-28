@@ -4,22 +4,16 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour
 {
     public float curHealth = 100;
-    public float damage;
     public float movementSpeed;
     public float maxHealth = 100;
 
     public Image healthBar;
+    public GameObject healthBG;
 
     // Use this for initialization
     void Start()
     {
         maxHealth = curHealth;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void TakeDamage(float amount)
@@ -30,10 +24,16 @@ public class Enemy : MonoBehaviour
         {
             Die();
         }
+        ShowHealthBar();
     }
 
     void Die()
     {
         Destroy(gameObject);
+    }
+
+    void ShowHealthBar()
+    {
+        healthBG.SetActive(true);
     }
 }
