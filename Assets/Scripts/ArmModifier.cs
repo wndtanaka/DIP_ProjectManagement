@@ -10,12 +10,17 @@ public class ArmModifier : MonoBehaviour
     public float attackSpeed;
 
     Enemy enemy;
+    GameObject player;
 
     private void Start()
     {
         enemy = GetComponentInParent<Enemy>();
+        player = GameObject.FindGameObjectWithTag("Player");
     }
-
+    private void Update()
+    {
+        
+    }
     public void CountDamage(float amount)
     {
         amount *= armModifier;
@@ -27,7 +32,8 @@ public class ArmModifier : MonoBehaviour
         Player player = other.gameObject.GetComponent<Player>();
         if (player != null)
         {
-            player.TakeDamage(damage);
+            player.KnockBack(0.5f, Vector3.back);
+            player.TakeDamage(10);
         }
     }
 }

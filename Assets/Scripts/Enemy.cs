@@ -4,7 +4,6 @@ using UnityEngine.UI;
 public class Enemy : MonoBehaviour
 {
     public float curHealth = 100;
-    public float movementSpeed;
     public float maxHealth = 100;
 
     public Image healthBar;

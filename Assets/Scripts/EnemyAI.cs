@@ -9,6 +9,7 @@ public class EnemyAI : MonoBehaviour
 
     Transform target;
     NavMeshAgent nav;
+    Vector3 direction;
 
     // Use this for initialization
     void Start()
@@ -25,17 +26,35 @@ public class EnemyAI : MonoBehaviour
         if (distance <= lookRadius)
         {
             nav.SetDestination(target.position);
+            lookRadius = 30f;
 
-            if (distance <= nav.stoppingDistance)
+            if (distance <= nav.stoppingDistance + 1)
             {
                 FaceTarget();
             }
         }
+        else
+        {
+            lookRadius = 10f;
+        }
+
+        //if (!nav.pathPending)
+        //{
+        //    if (nav.remainingDistance <= nav.stoppingDistance)
+        //    {
+        //        if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
+        //        {
+        //            Player player = target.GetComponent<Player>();
+
+        //            player.KnockBack(1, direction);
+        //            player.TakeDamage(25);
+        //        }
+        //    }
+        //}
     }
 
     void FaceTarget()
     {
-
         Vector3 direction = (target.position - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
@@ -46,4 +65,5 @@ public class EnemyAI : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, lookRadius);
     }
+
 }

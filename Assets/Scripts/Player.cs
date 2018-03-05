@@ -17,11 +17,13 @@ public class Player : MonoBehaviour
 
     bool isSpawned = false;
     RigidbodyFirstPersonController rigid;
+    Rigidbody rb;
 
     private void Start()
     {
         health = maxHealth;
         rigid = GetComponent<RigidbodyFirstPersonController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -46,10 +48,6 @@ public class Player : MonoBehaviour
         {
             rigid.enabled = true;
         }
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            KnockBack(2);
-        }
     }
 
     void Respawn()
@@ -62,8 +60,9 @@ public class Player : MonoBehaviour
         health -= amount;
     }
 
-    public void KnockBack(Vector3 knock)
+    public void KnockBack(float knock, Vector3 direction)
     {
         knockBackCounter = knock;
+        //rb.AddForce(direction * 100 * Time.deltaTime, ForceMode.Impulse);
     }
 }
