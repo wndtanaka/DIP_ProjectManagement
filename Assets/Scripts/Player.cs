@@ -48,6 +48,11 @@ public class Player : MonoBehaviour
         {
             rigid.enabled = true;
         }
+
+        if (health == 0)
+        {
+            Die();
+        }
     }
 
     void Respawn()
@@ -64,5 +69,10 @@ public class Player : MonoBehaviour
     {
         knockBackCounter = knock;
         //rb.AddForce(direction * 100 * Time.deltaTime, ForceMode.Impulse);
+    }
+
+    void Die()
+    {
+        Debug.Log("You Died");
     }
 }

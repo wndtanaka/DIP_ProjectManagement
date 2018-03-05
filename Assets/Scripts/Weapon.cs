@@ -1,28 +1,36 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class Weapon : MonoBehaviour
 {
-    public float damage = 10f;
-    public float range = 100f;
-    public float shootRate = 15f;
-    public int ammoCount = 30;
-    public int maxAmmo = 90;
-    public int maxMags = 30;
+    public float damage;
+    public float range;
+    public float shootRate;
+    public int ammoCount;
+    public int maxAmmo;
+    public int maxMags;
+    public float zoom;
 
     public ParticleSystem muzzleFlash;
     public GameObject projectile;
     public Text ammoCounter;
+    public Text reloadText;
     //public Recoil recoil;
-
-    float fireRate = 0;
+    protected float defaultFOV;
+    protected float fireRate = 0;
     Camera fpsCam;
+    protected GameObject crosshair;
 
-    void Start()
+    protected virtual void Start()
     {
         fpsCam = Camera.main;
+        defaultFOV = fpsCam.fieldOfView;
+        crosshair = GameObject.Find("Crosshair");
     }
-    void Update()
+
+    protected virtual void Update()
     {
         if (Input.GetMouseButton(0) && ammoCount > 0 && Time.time >= fireRate)
         {
@@ -31,14 +39,26 @@ public class Weapon : MonoBehaviour
             ammoCount--;
             //recoil.StartRecoil(0.2f, 3f, 3f);
         }
+        if (Input.GetMouseButton(0) && ammoCount <= 0)
+        {
+            StartCoroutine(ShowReloadText());
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             Reload();
         }
-
         ammoCounter.text = ammoCount + "/" + maxAmmo;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            Camera.main.fieldOfView = defaultFOV / zoom;
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            Camera.main.fieldOfView = defaultFOV;
+        }
     }
-    void Shoot()
+    protected void Shoot()
     {
         muzzleFlash.Play();
         RaycastHit hit;
@@ -87,7 +107,7 @@ public class Weapon : MonoBehaviour
             Destroy(projectileGO, 1f);
         }
     }
-    void Reload()
+    protected void Reload()
     {
         if (ammoCount >= maxMags)
         {
@@ -110,5 +130,12 @@ public class Weapon : MonoBehaviour
             }
 
         }
+    }
+    protected IEnumerator ShowReloadText()
+    {
+        reloadText.text = "Press 'R' to Reload";
+        reloadText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        reloadText.gameObject.SetActive(false);
     }
 }
