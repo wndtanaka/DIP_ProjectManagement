@@ -14,7 +14,10 @@ public class Enemy : MonoBehaviour
     {
         maxHealth = curHealth;
     }
-
+    void Update()
+    {
+        healthBG.transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+    }
     public void TakeDamage(float amount)
     {
         curHealth -= amount;

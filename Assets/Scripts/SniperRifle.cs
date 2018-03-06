@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SniperRifle : Weapon
 {
+    public float reloadTime;
+
     public Animator anim;
     public GameObject scopeIn;
     public Camera weaponCamera;
@@ -12,7 +14,7 @@ public class SniperRifle : Weapon
 
     protected override void Update()
     {
-        if (Input.GetMouseButton(0) && ammoCount > 0 && Time.time >= fireRate)
+        if (Input.GetMouseButton(0) && ammoCount > 0 && Time.time >= fireRate && !ableToShoot)
         {
             fireRate = Time.time + 1f / shootRate;
             Shoot();
@@ -25,7 +27,14 @@ public class SniperRifle : Weapon
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            if (ammoCount >= maxMags || maxAmmo <= 0)
+            {
+                return;
+            }
+            else
+            {
+                StartCoroutine(ReloadTime());
+            }
         }
         ammoCounter.text = ammoCount + "/" + maxAmmo;
 
@@ -46,6 +55,7 @@ public class SniperRifle : Weapon
 
     IEnumerator OnScoped()
     {
+        WeaponSwitching.isScoping = !WeaponSwitching.isScoping;
         yield return new WaitForSeconds(.15f);
         scopeIn.SetActive(isScoped);
         weaponCamera.gameObject.SetActive(!isScoped);
@@ -55,9 +65,22 @@ public class SniperRifle : Weapon
 
     void OnUnscoped()
     {
+        WeaponSwitching.isScoping = !WeaponSwitching.isScoping;
         scopeIn.SetActive(isScoped);
         weaponCamera.gameObject.SetActive(!isScoped);
         crosshair.SetActive(!isScoped);
         Camera.main.fieldOfView = defaultFOV;
+    }
+
+    protected override IEnumerator ReloadTime()
+    {
+        ableToShoot = !ableToShoot;
+        anim.SetBool("isReloading", true);
+        WeaponSwitching.isReloading = !WeaponSwitching.isReloading;
+        yield return new WaitForSeconds(reloadTime);
+        Reload();
+        ableToShoot = !ableToShoot;
+        anim.SetBool("isReloading", false);
+        WeaponSwitching.isReloading = !WeaponSwitching.isReloading;
     }
 }

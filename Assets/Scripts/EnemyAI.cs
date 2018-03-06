@@ -7,7 +7,7 @@ public class EnemyAI : MonoBehaviour
 {
     public float lookRadius = 10f;
 
-    Transform target;
+    public Transform target;
     NavMeshAgent nav;
     Vector3 direction;
 
@@ -37,20 +37,6 @@ public class EnemyAI : MonoBehaviour
         {
             lookRadius = 10f;
         }
-
-        //if (!nav.pathPending)
-        //{
-        //    if (nav.remainingDistance <= nav.stoppingDistance)
-        //    {
-        //        if (!nav.hasPath || nav.velocity.sqrMagnitude == 0f)
-        //        {
-        //            Player player = target.GetComponent<Player>();
-
-        //            player.KnockBack(1, direction);
-        //            player.TakeDamage(25);
-        //        }
-        //    }
-        //}
     }
 
     void FaceTarget()

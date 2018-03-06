@@ -4,6 +4,9 @@ public class WeaponSwitching : MonoBehaviour
 {
     public int selectedWeapon = 0;
 
+    public static bool isScoping = false;
+    public static bool isReloading = false;
+
     // Use this for initialization
     void Start()
     {
@@ -15,7 +18,7 @@ public class WeaponSwitching : MonoBehaviour
     {
         int previousSelectedWeapon = selectedWeapon;
 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f && !isScoping && !isReloading)
         {
             if (selectedWeapon >= transform.childCount - 1)
             {
@@ -26,7 +29,7 @@ public class WeaponSwitching : MonoBehaviour
                 selectedWeapon++;
             }
         }
-        if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0f && !isScoping && !isReloading)
         {
             if (selectedWeapon <= 0)
             {
@@ -37,7 +40,7 @@ public class WeaponSwitching : MonoBehaviour
                 selectedWeapon--;
             }
         }
-        if (previousSelectedWeapon != selectedWeapon)
+        if (previousSelectedWeapon != selectedWeapon && !isScoping && !isReloading)
         {
             SelectWeapon();
         }

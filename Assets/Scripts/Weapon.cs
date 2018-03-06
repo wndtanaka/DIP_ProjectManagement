@@ -12,12 +12,14 @@ public class Weapon : MonoBehaviour
     public int maxAmmo;
     public int maxMags;
     public float zoom;
+    public bool ableToShoot = false;
 
     public ParticleSystem muzzleFlash;
     public GameObject projectile;
     public Text ammoCounter;
     public Text reloadText;
     //public Recoil recoil;
+    int neededAmmo;
     protected float defaultFOV;
     protected float fireRate = 0;
     Camera fpsCam;
@@ -32,7 +34,7 @@ public class Weapon : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (Input.GetMouseButton(0) && ammoCount > 0 && Time.time >= fireRate)
+        if (Input.GetMouseButton(0) && ammoCount > 0 && Time.time >= fireRate && !ableToShoot)
         {
             fireRate = Time.time + 1f / shootRate;
             Shoot();
@@ -45,16 +47,26 @@ public class Weapon : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Reload();
+            if (ammoCount >= maxMags || maxAmmo <= 0)
+            {
+                return;
+            }
+            else
+            {
+                StartCoroutine(ReloadTime());
+            }
+
         }
         ammoCounter.text = ammoCount + "/" + maxAmmo;
 
         if (Input.GetMouseButtonDown(1))
         {
+            WeaponSwitching.isScoping = !WeaponSwitching.isScoping;
             Camera.main.fieldOfView = defaultFOV / zoom;
         }
         if (Input.GetMouseButtonUp(1))
         {
+            WeaponSwitching.isScoping = !WeaponSwitching.isScoping;
             Camera.main.fieldOfView = defaultFOV;
         }
     }
@@ -109,10 +121,6 @@ public class Weapon : MonoBehaviour
     }
     protected void Reload()
     {
-        if (ammoCount >= maxMags)
-        {
-            return;
-        }
         if (ammoCount < maxMags && maxAmmo > 0)
         {
             int neededAmmo;
@@ -128,7 +136,6 @@ public class Weapon : MonoBehaviour
                 ammoCount = maxMags;
                 maxAmmo -= neededAmmo;
             }
-
         }
     }
     protected IEnumerator ShowReloadText()
@@ -137,5 +144,13 @@ public class Weapon : MonoBehaviour
         reloadText.gameObject.SetActive(true);
         yield return new WaitForSeconds(2);
         reloadText.gameObject.SetActive(false);
+    }
+
+    protected virtual IEnumerator ReloadTime()
+    {
+        ableToShoot = !ableToShoot;
+        yield return new WaitForSeconds(2f);
+        Reload();
+        ableToShoot = !ableToShoot;
     }
 }
